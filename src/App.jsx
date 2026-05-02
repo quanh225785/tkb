@@ -10,6 +10,8 @@ import { parseExcelFile } from "./utils/excelParser";
 import {
   saveToStorage,
   loadFromStorage,
+  loadAllClassesFromStorage,
+  loadSubjectCodesFromStorage,
   clearStorage,
   getStorageMeta,
 } from "./utils/storage";
@@ -223,14 +225,14 @@ export default function App() {
   );
 
   const handleSave = useCallback(() => {
-    const ok = saveToStorage(selectedClasses);
+    const ok = saveToStorage(selectedClasses, allClasses, mySubjectCodes);
     addNotif(
       ok
         ? `Đã lưu ${Object.keys(selectedClasses).length} môn học`
         : "Lưu thất bại",
       ok ? "success" : "error",
     );
-  }, [selectedClasses, addNotif]);
+  }, [selectedClasses, allClasses, mySubjectCodes, addNotif]);
 
   const handleExport = useCallback(() => {
     if (selectedArray.length === 0) {
@@ -339,6 +341,18 @@ export default function App() {
                       const saved = loadFromStorage();
                       if (saved) {
                         setSelectedClasses(saved);
+                        // Restore allClasses và mySubjectCodes nếu có
+                        const savedClasses = loadAllClassesFromStorage();
+                        if (savedClasses && savedClasses.length > 0) {
+                          setAllClasses(savedClasses);
+                        }
+                        const savedCodes = loadSubjectCodesFromStorage();
+                        if (savedCodes && savedCodes.size > 0) {
+                          setMySubjectCodes(savedCodes);
+                        } else {
+                          // Fallback: tạo mySubjectCodes từ selectedClasses
+                          setMySubjectCodes(new Set(Object.keys(saved)));
+                        }
                         setStep("schedule");
                         addNotif("Đã mở dữ liệu đã lưu", "success");
                       }
