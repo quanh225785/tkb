@@ -17,7 +17,6 @@
   --bg4: #ffe7f3;
   --border: rgba(244, 114, 182, 0.28);
   --border2: rgba(244, 114, 182, 0.44);
-  --ui-scale: 0.75;
   --text2: #434a5a;
   --text3: #6f7688;
 
@@ -43,26 +42,10 @@
   --shadow-lg: 0 10px 34px rgba(244, 114, 182, 0.22);
 }
 
-/* Global UI scaling (75%) */
 html,
 body,
 #root {
   height: 100%;
-}
-
-/* Chrome/Edge */
-#root {
-  zoom: var(--ui-scale);
-}
-
-/* Fallback for browsers without zoom */
-@supports not (zoom: 1) {
-  #root {
-    transform: scale(var(--ui-scale));
-    transform-origin: top left;
-    width: calc(100% / var(--ui-scale));
-    height: calc(100% / var(--ui-scale));
-  }
 }
 
 html {
@@ -414,7 +397,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 72px);
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 .sp-topbar {
@@ -422,15 +405,16 @@ a:hover {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 20px 0 16px;
+  padding: 16px 0 12px;
+  flex-shrink: 0;
 }
 .sp-title h2 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   margin-bottom: 4px;
 }
 .sp-title p {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text2);
 }
 .sp-stats {
@@ -461,7 +445,8 @@ a:hover {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding-bottom: 12px;
+  padding-bottom: 10px;
+  flex-shrink: 0;
 }
 .sp-search-wrap {
   flex: 1;
@@ -477,12 +462,12 @@ a:hover {
 }
 .sp-search {
   width: 100%;
-  padding: 9px 12px 9px 34px;
+  padding: 10px 12px 10px 36px;
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--r8);
   color: var(--text);
-  font-size: 13px;
+  font-size: 14px;
 }
 .sp-search:focus {
   border-color: var(--blue);
@@ -492,9 +477,9 @@ a:hover {
   color: var(--text3);
 }
 .btn-sm {
-  padding: 7px 14px;
+  padding: 8px 16px;
   border-radius: var(--r8);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   background: var(--bg3);
   color: var(--text2);
@@ -529,8 +514,8 @@ a:hover {
 .sp-item {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
+  gap: 12px;
+  padding: 14px 16px;
   border-radius: var(--r12);
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -565,24 +550,24 @@ a:hover {
   margin-bottom: 4px;
 }
 .sp-code {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--blue);
   font-family: monospace;
 }
 
 .sp-tc {
-  font-size: 10px;
+  font-size: 11px;
   background: rgba(var(--blue-rgb), 0.14);
   color: var(--blue);
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 99px;
   font-weight: 600;
 }
 .sp-type {
   background: var(--bg4);
-  font-size: 10px;
-  padding: 2px 7px;
+  font-size: 11px;
+  padding: 3px 8px;
   border-radius: 99px;
   font-weight: 600;
 }
@@ -595,30 +580,31 @@ a:hover {
   color: var(--purple);
 }
 .sp-sections {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text3);
   background: var(--bg4);
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 99px;
 }
 .sp-name {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text);
 }
 .sp-name-en {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text3);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .sp-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 0;
+  padding: 12px 0;
   border-top: 1px solid var(--border);
-  margin-top: 8px;
+  margin-top: 6px;
+  flex-shrink: 0;
 }
 .sp-footer-info {
   display: flex;
@@ -798,14 +784,14 @@ a:hover {
 }
 .cp-tab-code {
   display: block;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--blue);
   font-family: monospace;
 }
 .cp-tab-name {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--text);
   white-space: nowrap;
@@ -816,13 +802,13 @@ a:hover {
 .cp-tab-chosen {
   display: flex;
   align-items: center;
-  gap: 2px;
-  font-size: 9px;
+  gap: 3px;
+  font-size: 10px;
   font-weight: 600;
-  margin-top: 1px;
+  margin-top: 2px;
 }
 .cp-tab-tc {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text3);
   flex-shrink: 0;
 }
@@ -855,19 +841,19 @@ a:hover {
   flex-shrink: 0;
 }
 .cp-class-code {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--blue);
   font-family: monospace;
 }
 .cp-class-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 .cp-class-name-en {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text3);
   margin-top: 2px;
 }
@@ -1249,10 +1235,10 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text2);
   background: var(--bg3);
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: var(--r8);
   border: 1px solid var(--border);
   flex-shrink: 0;
@@ -1263,16 +1249,17 @@ a:hover {
 .cp-title {
   display: flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   flex: 1;
+  gap: 6px;
 }
 .cp-progress {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text2);
 }
 .progress-bar {
@@ -1335,19 +1322,19 @@ a:hover {
   transition: background 0.2s;
 }
 .cp-subject-code {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--blue);
   font-family: monospace;
 }
 .cp-subject-name {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text);
   margin-top: 2px;
 }
 .cp-chosen-lop {
-  font-size: 10px;
+  font-size: 11px;
   margin-top: 3px;
   font-weight: 500;
 }
@@ -1407,29 +1394,22 @@ a:hover {
 .cc-left {
   flex: 1;
 }
-.cc-top {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 5px;
-  flex-wrap: wrap;
-}
 .cc-lop {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   font-family: monospace;
   color: var(--text);
   background: var(--bg2);
-  padding: 1px 6px;
+  padding: 2px 8px;
   border-radius: 4px;
 }
 .cc-badge {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  font-size: 9px;
+  gap: 4px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 99px;
 }
 .cc-badge.selected-b {
@@ -1450,13 +1430,13 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text3);
 }
 .cc-meta span {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
 }
 .cc-meta .cn {
   background: var(--bg3);
@@ -1466,11 +1446,11 @@ a:hover {
 .sched-tag {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  font-size: 9px;
+  gap: 4px;
+  font-size: 11px;
   color: var(--text2);
   background: var(--bg3);
-  padding: 2px 7px;
+  padding: 3px 9px;
   border-radius: 99px;
 }
 .cc-right {
@@ -1479,8 +1459,8 @@ a:hover {
   align-items: center;
 }
 .cc-select-btn {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1488,7 +1468,7 @@ a:hover {
   background: var(--bg3);
   color: var(--text2);
   border: 1px solid var(--border);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   transition: all 0.15s;
 }
@@ -1524,11 +1504,11 @@ a:hover {
   box-shadow: var(--shadow);
 }
 .tkb-empty h3 {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
 }
 .tkb-empty p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text2);
 }
 .tkb-legend {
@@ -1555,9 +1535,9 @@ a:hover {
   flex-shrink: 0;
 }
 .leg-text {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text2);
-  max-width: 180px;
+  max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1580,13 +1560,13 @@ a:hover {
 .timetable-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 12px;
   table-layout: fixed;
 }
 .timetable-table th {
-  padding: 7px 6px;
+  padding: 8px 6px;
   text-align: center;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text2);
   background: var(--bg3);
@@ -1623,7 +1603,7 @@ a:hover {
   display: block;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -1632,8 +1612,8 @@ a:hover {
 .td-period {
   text-align: center;
   color: var(--text3);
-  padding: 3px 3px;
-  font-size: 10px;
+  padding: 4px 3px;
+  font-size: 11px;
   background: var(--bg3);
 }
 .td-time {
@@ -1642,15 +1622,15 @@ a:hover {
   padding: 3px 6px;
   white-space: nowrap;
   background: var(--bg3);
-  font-size: 9px;
+  font-size: 10px;
 }
 .td-class {
-  height: 36px;
+  height: 40px;
 }
 .td-class.empty {
 }
 .td-class.filled {
-  padding: 3px 5px;
+  padding: 4px 6px;
   cursor: default;
 }
 .cell-inner {
@@ -1660,17 +1640,17 @@ a:hover {
   height: 100%;
 }
 .cell-name {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   line-height: 1.3;
 }
 .cell-code {
-  font-size: 8px;
+  font-size: 9px;
   color: var(--text3);
   font-family: monospace;
 }
 .cell-time {
-  font-size: 8px;
+  font-size: 9px;
   color: var(--text2);
   font-weight: 600;
 }
@@ -1678,8 +1658,8 @@ a:hover {
 .cell-lect {
   display: flex;
   align-items: center;
-  gap: 2px;
-  font-size: 8px;
+  gap: 3px;
+  font-size: 9px;
   color: var(--text3);
 }
 .session-start > td:not(.td-session) {
