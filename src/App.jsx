@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import Header from "./components/Header";
 import FileUpload from "./components/FileUpload";
 import SubjectPicker from "./components/SubjectPicker";
@@ -10,6 +10,7 @@ import { parseExcelFile } from "./utils/excelParser";
 import {
   saveToStorage,
   loadFromStorage,
+  clearStorage,
   getStorageMeta,
 } from "./utils/storage";
 import { exportToExcel, importFromJSON } from "./utils/exportUtils";
@@ -29,19 +30,66 @@ export default function App() {
   const [showGuide, setShowGuide] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
+  const [pickerWidth, setPickerWidth] = useState(() => {
+    try {
+      const raw = window.localStorage.getItem("tkb:pickerWidth");
+      const n = raw ? parseInt(raw, 10) : 380;
+      if (!Number.isFinite(n)) return 380;
+      return Math.min(760, Math.max(320, n));
+    } catch {
+      return 380;
+    }
+  });
+
   const importJsonRef = React.useRef(null);
 
-  useEffect(() => {
-    const saved = loadFromStorage();
-    if (saved && Object.keys(saved).length > 0) {
-      setSelectedClasses(saved);
-    }
-  }, []);
+  const startResizePicker = useCallback(
+    (e) => {
+      e.preventDefault();
+      const startX = e.clientX;
+      const startWidth = pickerWidth;
+      let nextWidth = startWidth;
+
+      const prevCursor = document.body.style.cursor;
+      const prevUserSelect = document.body.style.userSelect;
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+
+      const clamp = (val, min, max) => Math.min(max, Math.max(min, val));
+
+      const onMove = (ev) => {
+        nextWidth = clamp(startWidth + (ev.clientX - startX), 320, 760);
+        setPickerWidth(nextWidth);
+      };
+
+      const onUp = () => {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        document.body.style.cursor = prevCursor;
+        document.body.style.userSelect = prevUserSelect;
+        try {
+          window.localStorage.setItem("tkb:pickerWidth", String(nextWidth));
+        } catch {
+          // ignore
+        }
+      };
+
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    },
+    [pickerWidth],
+  );
 
   const addNotif = useCallback((message, type = "info", duration = 3000) => {
     const id = ++notifId;
     setNotifications((prev) => [...prev, { id, message, type, duration }]);
   }, []);
+
+  const handleClearSavedData = useCallback(() => {
+    clearStorage();
+    setSelectedClasses({});
+    addNotif("Đã xóa dữ liệu đã lưu trên máy", "success", 2500);
+  }, [addNotif]);
 
   const dismissNotif = useCallback((id) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
@@ -135,26 +183,43 @@ export default function App() {
   const handleSelectClass = useCallback(
     (cls) => {
       const maHP = cls.maHP;
-      setSelectedClasses((prev) => {
-        if (prev[maHP]?.id === cls.id) {
-          const next = { ...prev };
-          delete next[maHP];
-          addNotif(`Bỏ chọn: ${cls.tenHP}`, "info", 2000);
-          return next;
-        }
-        const conflicts = checkConflict(cls, Object.values(prev));
-        if (conflicts.length > 0) {
-          addNotif(
-            `⚠️ Trùng lịch với: ${conflicts.map((c) => c.conflictWith.tenHP).join(", ")}`,
-            "warning",
-            4000,
-          );
-        }
-        addNotif(`✓ Chọn: ${cls.tenHP} (${cls.maLop})`, "success", 2000);
-        return { ...prev, [maHP]: cls };
-      });
+      const prev = selectedClasses;
+
+      if (prev[maHP]?.id === cls.id) {
+        const next = { ...prev };
+        delete next[maHP];
+        setSelectedClasses(next);
+        addNotif(`Bỏ chọn: ${cls.tenHP}`, "info", 2000);
+        return;
+      }
+
+      const conflicts = checkConflict(cls, Object.values(prev));
+      if (conflicts.length > 0) {
+        addNotif(
+          `⚠️ Trùng lịch với: ${conflicts.map((c) => c.conflictWith.tenHP).join(", ")}`,
+          "warning",
+          4000,
+        );
+      }
+
+      setSelectedClasses({ ...prev, [maHP]: cls });
+      addNotif(`✓ Chọn: ${cls.tenHP} (${cls.maLop})`, "success", 2000);
     },
-    [addNotif],
+    [selectedClasses, addNotif],
+  );
+
+  const handleRemoveClassById = useCallback(
+    (classId) => {
+      const entry = Object.entries(selectedClasses).find(
+        ([, v]) => v.id === classId,
+      );
+      if (!entry) return;
+      const next = { ...selectedClasses };
+      delete next[entry[0]];
+      setSelectedClasses(next);
+      addNotif("Đã bỏ chọn lớp", "info", 2000);
+    },
+    [selectedClasses, addNotif],
   );
 
   const handleSave = useCallback(() => {
@@ -281,6 +346,10 @@ export default function App() {
                   >
                     💾 Mở bản đã lưu
                   </button>
+                  <span className="sep">·</span>
+                  <button className="btn-text" onClick={handleClearSavedData}>
+                    🗑️ Xóa dữ liệu đã lưu
+                  </button>
                 </>
               )}
             </div>
@@ -296,7 +365,10 @@ export default function App() {
         )}
 
         {step === "schedule" && (
-          <div className="schedule-layout">
+          <div
+            className="schedule-layout"
+            style={{ "--picker-width": `${pickerWidth}px` }}
+          >
             <div className="picker-panel">
               <ClassPicker
                 mySubjects={mySubjects}
@@ -306,22 +378,20 @@ export default function App() {
                 onBackToSubjects={() => setStep("subjects")}
               />
             </div>
+            <div
+              className="resize-handle"
+              role="separator"
+              aria-orientation="vertical"
+              onPointerDown={startResizePicker}
+            />
             <div className="timetable-panel">
               <TimetableGrid
                 selectedClasses={selectedArray}
                 colorMap={colorMap}
-                onRemoveClass={(classId) => {
-                  setSelectedClasses((prev) => {
-                    const next = { ...prev };
-                    const entry = Object.entries(next).find(
-                      ([, v]) => v.id === classId,
-                    );
-                    if (entry) {
-                      delete next[entry[0]];
-                      addNotif("Đã bỏ chọn lớp", "info", 2000);
-                    }
-                    return next;
-                  });
+                onRemoveClass={handleRemoveClassById}
+                onRemoveAll={() => {
+                  setSelectedClasses({});
+                  addNotif("Đã xóa tất cả môn đã chọn", "info", 2500);
                 }}
               />
             </div>

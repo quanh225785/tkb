@@ -4,9 +4,18 @@ import { DAYS, TIME_SLOTS } from "../utils/constants";
 import { buildTimetableMap } from "../utils/timetableUtils";
 
 const SESSION_GROUPS = [
-  { label: "Sáng", periods: [1, 2, 3, 4, 5, 6], color: "var(--amber)" },
-  { label: "Chiều", periods: [7, 8, 9, 10, 11, 12], color: "var(--cyan)" },
-  { label: "Tối", periods: [13, 14, 15, 16], color: "var(--purple)" },
+  {
+    label: "Sáng",
+    periods: [1, 2, 3, 4, 5, 6],
+    color: "var(--amber)",
+    displayOffset: 0,
+  },
+  {
+    label: "Chiều",
+    periods: [7, 8, 9, 10, 11, 12],
+    color: "var(--cyan)",
+    displayOffset: -6,
+  },
 ];
 
 const COLORS = [
@@ -24,10 +33,35 @@ const COLORS = [
   "#F0ABFC",
 ];
 
+function parseTimeRange(timeStr) {
+  const match = String(timeStr || "").match(/(\d{2}:\d{2}).*?(\d{2}:\d{2})/);
+  if (!match) return null;
+  return { start: match[1], end: match[2] };
+}
+
+function getTimeRangeForSlot(slot) {
+  if (!slot) return null;
+  const startPeriod = slot.tietBD;
+  const endPeriod = slot.tietBD + slot.soTiet - 1;
+
+  const startRange = parseTimeRange(
+    TIME_SLOTS.find((t) => t.period === startPeriod)?.time,
+  );
+  const endRange = parseTimeRange(
+    TIME_SLOTS.find((t) => t.period === endPeriod)?.time,
+  );
+  const start = startRange?.start;
+  const end = endRange?.end;
+
+  if (!start || !end) return null;
+  return `${start}–${end}`;
+}
+
 export default function TimetableGrid({
   selectedClasses,
   colorMap,
   onRemoveClass,
+  onRemoveAll,
 }) {
   const timetableMap = useMemo(
     () => buildTimetableMap(selectedClasses),
@@ -38,7 +72,13 @@ export default function TimetableGrid({
     return (
       <div className="tkb-wrap">
         <div className="tkb-empty">
-          <div style={{ fontSize: 40 }}>📅</div>
+          <img
+            className="tkb-empty-gif"
+            src="https://media2.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dzdiZDRwbGltZ3JwdnIzZ3F0bHU1NWRtb3F4YzV2bXg0dTVrYzl4dyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/JA1kmF8xsLQCm2qMcA/200.webp"
+            alt="Empty timetable"
+            loading="lazy"
+            decoding="async"
+          />
           <h3>Thời khóa biểu</h3>
           <p>Chọn lớp bên trái để xem lịch hiển thị ở đây</p>
         </div>
@@ -61,6 +101,7 @@ export default function TimetableGrid({
               {SESSION_GROUPS.map((sg) =>
                 sg.periods.map((p, pi) => {
                   const ts = TIME_SLOTS.find((t) => t.period === p);
+                  const displayPeriod = p + (sg.displayOffset || 0);
                   return (
                     <tr key={p} className={pi === 0 ? "session-start" : ""}>
                       {pi === 0 && (
@@ -77,7 +118,7 @@ export default function TimetableGrid({
                           </span>
                         </td>
                       )}
-                      <td className="td-period">{p}</td>
+                      <td className="td-period">{displayPeriod}</td>
                       <td className="td-time">{ts?.time}</td>
                       {DAYS.map((d) => (
                         <td key={d.id} className="td-class empty" />
@@ -97,6 +138,11 @@ export default function TimetableGrid({
     <div className="tkb-wrap">
       {/* Legend */}
       <div className="tkb-legend">
+        {onRemoveAll && (
+          <button className="leg-clear" type="button" onClick={onRemoveAll}>
+            Xóa tất cả
+          </button>
+        )}
         {selectedClasses.map((cls, idx) => {
           const colorObj = colorMap?.[cls.id];
           const color = colorObj?.bg || COLORS[idx % 12];
@@ -109,6 +155,7 @@ export default function TimetableGrid({
               {onRemoveClass && (
                 <button
                   className="leg-rm"
+                  type="button"
                   onClick={() => onRemoveClass(cls.id)}
                 >
                   <X size={11} />
@@ -138,6 +185,7 @@ export default function TimetableGrid({
             {SESSION_GROUPS.map((sg) =>
               sg.periods.map((period, pi) => {
                 const ts = TIME_SLOTS.find((t) => t.period === period);
+                const displayPeriod = period + (sg.displayOffset || 0);
                 return (
                   <tr key={period} className={pi === 0 ? "session-start" : ""}>
                     {pi === 0 && (
@@ -154,7 +202,7 @@ export default function TimetableGrid({
                         </span>
                       </td>
                     )}
-                    <td className="td-period">{period}</td>
+                    <td className="td-period">{displayPeriod}</td>
                     <td className="td-time">{ts?.time}</td>
 
                     {DAYS.map((day) => {
@@ -170,6 +218,7 @@ export default function TimetableGrid({
                       const color = colorObj?.bg || COLORS[idx % 12];
                       const light = colorObj?.light || `${color}33`;
                       const border = colorObj?.border || color;
+                      const timeRange = getTimeRangeForSlot(cell.slot);
 
                       return (
                         <td
@@ -189,6 +238,9 @@ export default function TimetableGrid({
                               {cell.class.tenHP}
                             </div>
                             <div className="cell-code">{cell.class.maLop}</div>
+                            {timeRange && (
+                              <div className="cell-time">{timeRange}</div>
+                            )}
                             {cell.slot?.phong && (
                               <div className="cell-room">
                                 <MapPin size={9} />

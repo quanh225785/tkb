@@ -1,16 +1,37 @@
-import React, { useState } from 'react';
-import { CheckCircle, Clock, MapPin, User, ChevronDown, ChevronUp, Plus, Check, AlertTriangle } from 'lucide-react';
-import { DAYS } from '../utils/constants';
+import React, { useState } from "react";
+import {
+  CheckCircle,
+  Clock,
+  MapPin,
+  User,
+  ChevronDown,
+  ChevronUp,
+  Plus,
+  Check,
+  AlertTriangle,
+} from "lucide-react";
+import { DAYS } from "../utils/constants";
+
+function toLocalPeriod(period) {
+  const p = parseInt(period);
+  if (p >= 7 && p <= 12) return p - 6;
+  return p;
+}
 
 function ScheduleTag({ slot }) {
-  const dayLabel = DAYS.find(d => d.id === slot.thu)?.short || `T${slot.thu}`;
+  const dayLabel = DAYS.find((d) => d.id === slot.thu)?.short || `T${slot.thu}`;
   const endPeriod = slot.tietBD + slot.soTiet - 1;
+  const displayStart = toLocalPeriod(slot.tietBD);
+  const displayEnd = toLocalPeriod(endPeriod);
   return (
     <span className="schedule-tag">
       <Clock size={11} />
-      {dayLabel} · Tiết {slot.tietBD}–{endPeriod}
+      {dayLabel} · Tiết {displayStart}–{displayEnd}
       {slot.phong && (
-        <><MapPin size={11} />{slot.phong}</>
+        <>
+          <MapPin size={11} />
+          {slot.phong}
+        </>
       )}
     </span>
   );
@@ -21,20 +42,34 @@ function ClassCard({ cls, onAdd, isSelected, hasConflict, colorStyle }) {
 
   return (
     <div
-      className={`class-card ${isSelected ? 'selected' : ''} ${hasConflict ? 'conflict' : ''}`}
-      style={isSelected ? { borderColor: colorStyle?.bg, background: colorStyle?.light } : {}}
+      className={`class-card ${isSelected ? "selected" : ""} ${hasConflict ? "conflict" : ""}`}
+      style={
+        isSelected
+          ? { borderColor: colorStyle?.bg, background: colorStyle?.light }
+          : {}
+      }
     >
       <div className="class-card-header">
         <div className="class-card-info">
           <div className="class-id-row">
             <span className="class-badge">{cls.maLop || cls.maHP}</span>
             {cls.loaiHP && (
-              <span className={`type-badge ${cls.loaiHP.includes('bắt buộc') || cls.loaiHP.includes('BB') ? 'required' : 'elective'}`}>
+              <span
+                className={`type-badge ${cls.loaiHP.includes("bắt buộc") || cls.loaiHP.includes("BB") ? "required" : "elective"}`}
+              >
                 {cls.loaiHP}
               </span>
             )}
-            {isSelected && <span className="selected-badge"><Check size={11} /> Đã chọn</span>}
-            {hasConflict && <span className="conflict-badge"><AlertTriangle size={11} /> Trùng lịch</span>}
+            {isSelected && (
+              <span className="selected-badge">
+                <Check size={11} /> Đã chọn
+              </span>
+            )}
+            {hasConflict && (
+              <span className="conflict-badge">
+                <AlertTriangle size={11} /> Trùng lịch
+              </span>
+            )}
           </div>
           <div className="schedule-tags">
             {cls.schedule.slice(0, expanded ? undefined : 2).map((slot, i) => (
@@ -48,11 +83,17 @@ function ClassCard({ cls, onAdd, isSelected, hasConflict, colorStyle }) {
 
         <button
           id={`btn-add-${cls.id}`}
-          className={`btn-add-class ${isSelected ? 'selected' : ''} ${hasConflict ? 'conflict' : ''}`}
+          className={`btn-add-class ${isSelected ? "selected" : ""} ${hasConflict ? "conflict" : ""}`}
           onClick={() => onAdd(cls)}
-          title={isSelected ? 'Bỏ chọn lớp này' : 'Thêm vào TKB'}
+          title={isSelected ? "Bỏ chọn lớp này" : "Thêm vào TKB"}
         >
-          {isSelected ? <Check size={18} /> : hasConflict ? <AlertTriangle size={18} /> : <Plus size={18} />}
+          {isSelected ? (
+            <Check size={18} />
+          ) : hasConflict ? (
+            <AlertTriangle size={18} />
+          ) : (
+            <Plus size={18} />
+          )}
         </button>
       </div>
 
@@ -64,41 +105,56 @@ function ClassCard({ cls, onAdd, isSelected, hasConflict, colorStyle }) {
           </span>
         )}
         {cls.cnDaoTao && (
-          <span className="meta-item program">
-            {cls.cnDaoTao}
-          </span>
+          <span className="meta-item program">{cls.cnDaoTao}</span>
         )}
-        {cls.schedule.some(s => s.tuanHoc) && (
+        {cls.schedule.some((s) => s.tuanHoc) && (
           <span className="meta-item">
             <Clock size={13} />
-            Tuần: {cls.schedule.find(s => s.tuanHoc)?.tuanHoc}
+            Tuần: {cls.schedule.find((s) => s.tuanHoc)?.tuanHoc}
           </span>
         )}
       </div>
 
       {cls.schedule.length > 2 && (
-        <button
-          className="expand-btn"
-          onClick={() => setExpanded(!expanded)}
-        >
-          {expanded ? <><ChevronUp size={13} /> Thu gọn</> : <><ChevronDown size={13} /> Xem thêm lịch</>}
+        <button className="expand-btn" onClick={() => setExpanded(!expanded)}>
+          {expanded ? (
+            <>
+              <ChevronUp size={13} /> Thu gọn
+            </>
+          ) : (
+            <>
+              <ChevronDown size={13} /> Xem thêm lịch
+            </>
+          )}
         </button>
       )}
     </div>
   );
 }
 
-export default function SearchResults({ results, selectedClasses, onToggleClass, getConflicts, getColor }) {
+export default function SearchResults({
+  results,
+  selectedClasses,
+  onToggleClass,
+  getConflicts,
+  getColor,
+}) {
   const [expandedSubjects, setExpandedSubjects] = useState({});
 
   if (!results || results.length === 0) return null;
 
   // Group by course code
   const groups = {};
-  results.forEach(cls => {
+  results.forEach((cls) => {
     const key = cls.maHP || cls.tenHP;
     if (!groups[key]) {
-      groups[key] = { maHP: cls.maHP, tenHP: cls.tenHP, soTC: cls.soTC, loaiHP: cls.loaiHP, sections: [] };
+      groups[key] = {
+        maHP: cls.maHP,
+        tenHP: cls.tenHP,
+        soTC: cls.soTC,
+        loaiHP: cls.loaiHP,
+        sections: [],
+      };
     }
     groups[key].sections.push(cls);
   });
@@ -106,7 +162,7 @@ export default function SearchResults({ results, selectedClasses, onToggleClass,
   const groupList = Object.values(groups);
 
   const toggleSubject = (key) => {
-    setExpandedSubjects(prev => ({ ...prev, [key]: !prev[key] }));
+    setExpandedSubjects((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   return (
@@ -114,15 +170,17 @@ export default function SearchResults({ results, selectedClasses, onToggleClass,
       <div className="results-header">
         <h3 className="results-title">
           Kết quả tìm kiếm
-          <span className="results-count">{results.length} lớp / {groupList.length} môn</span>
+          <span className="results-count">
+            {results.length} lớp / {groupList.length} môn
+          </span>
         </h3>
       </div>
 
       <div className="results-list">
         {groupList.map((group) => {
           const isOpen = expandedSubjects[group.maHP] !== false; // default open
-          const selectedInGroup = group.sections.filter(c =>
-            selectedClasses.some(s => s.id === c.id)
+          const selectedInGroup = group.sections.filter((c) =>
+            selectedClasses.some((s) => s.id === c.id),
           ).length;
 
           return (
@@ -136,10 +194,16 @@ export default function SearchResults({ results, selectedClasses, onToggleClass,
                   <span className="subject-code">{group.maHP}</span>
                   <span className="subject-name">{group.tenHP}</span>
                   <div className="subject-badges">
-                    {group.soTC && <span className="tc-badge">{group.soTC} TC</span>}
-                    <span className="section-count">{group.sections.length} lớp</span>
+                    {group.soTC && (
+                      <span className="tc-badge">{group.soTC} TC</span>
+                    )}
+                    <span className="section-count">
+                      {group.sections.length} lớp
+                    </span>
                     {selectedInGroup > 0 && (
-                      <span className="selected-count">✓ {selectedInGroup} đã chọn</span>
+                      <span className="selected-count">
+                        ✓ {selectedInGroup} đã chọn
+                      </span>
                     )}
                   </div>
                 </div>
@@ -149,7 +213,9 @@ export default function SearchResults({ results, selectedClasses, onToggleClass,
               {isOpen && (
                 <div className="section-list">
                   {group.sections.map((cls) => {
-                    const isSelected = selectedClasses.some(s => s.id === cls.id);
+                    const isSelected = selectedClasses.some(
+                      (s) => s.id === cls.id,
+                    );
                     const conflicts = isSelected ? [] : getConflicts(cls);
                     const hasConflict = conflicts.length > 0;
                     const colorStyle = isSelected ? getColor(cls.id) : null;

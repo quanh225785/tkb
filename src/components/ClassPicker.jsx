@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   ArrowLeft,
   Clock,
@@ -8,16 +8,42 @@ import {
   AlertTriangle,
   ChevronRight,
 } from "lucide-react";
-import { DAYS } from "../utils/constants";
+import { DAYS, TIME_SLOTS } from "../utils/constants";
 import { checkConflict } from "../utils/timetableUtils";
+
+function toLocalPeriod(period) {
+  const p = parseInt(period);
+  if (p >= 7 && p <= 12) return p - 6;
+  return p;
+}
+
+function parseTimeRange(timeStr) {
+  const match = String(timeStr || "").match(/(\d{2}:\d{2}).*?(\d{2}:\d{2})/);
+  if (!match) return null;
+  return { start: match[1], end: match[2] };
+}
 
 function ScheduleTag({ slot }) {
   const dayLabel = DAYS.find((d) => d.id === slot.thu)?.short || `T${slot.thu}`;
   const end = slot.tietBD + slot.soTiet - 1;
+  const displayStart = toLocalPeriod(slot.tietBD);
+  const displayEnd = toLocalPeriod(end);
+
+  const startRange = parseTimeRange(
+    TIME_SLOTS.find((t) => t.period === slot.tietBD)?.time,
+  );
+  const endRange = parseTimeRange(
+    TIME_SLOTS.find((t) => t.period === end)?.time,
+  );
+  const timeRange =
+    startRange?.start && endRange?.end
+      ? `${startRange.start}–${endRange.end}`
+      : null;
   return (
     <span className="sched-tag">
       <Clock size={10} />
-      {dayLabel} · {slot.tietBD}–{end}
+      {dayLabel} · {displayStart}–{displayEnd}
+      {timeRange ? ` · ${timeRange}` : ""}
       {slot.phong && (
         <>
           <MapPin size={10} />
@@ -36,6 +62,54 @@ export default function ClassPicker({
   onBackToSubjects,
 }) {
   const [activeIdx, setActiveIdx] = useState(0);
+
+  const [tabsWidth, setTabsWidth] = useState(() => {
+    try {
+      const raw = window.localStorage.getItem("tkb:tabsWidth");
+      const n = raw ? parseInt(raw, 10) : 160;
+      if (!Number.isFinite(n)) return 160;
+      return Math.min(320, Math.max(120, n));
+    } catch {
+      return 160;
+    }
+  });
+
+  const startResizeTabs = useCallback(
+    (e) => {
+      e.preventDefault();
+      const startX = e.clientX;
+      const startWidth = tabsWidth;
+      let nextWidth = startWidth;
+
+      const prevCursor = document.body.style.cursor;
+      const prevUserSelect = document.body.style.userSelect;
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+
+      const clamp = (val, min, max) => Math.min(max, Math.max(min, val));
+
+      const onMove = (ev) => {
+        nextWidth = clamp(startWidth + (ev.clientX - startX), 120, 320);
+        setTabsWidth(nextWidth);
+      };
+
+      const onUp = () => {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        document.body.style.cursor = prevCursor;
+        document.body.style.userSelect = prevUserSelect;
+        try {
+          window.localStorage.setItem("tkb:tabsWidth", String(nextWidth));
+        } catch {
+          // ignore
+        }
+      };
+
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    },
+    [tabsWidth],
+  );
 
   const selectedArray = useMemo(
     () => Object.values(selectedClasses),
@@ -78,7 +152,7 @@ export default function ClassPicker({
       </div>
 
       {/* ── BODY: 2 columns inside picker ── */}
-      <div className="cp-body">
+      <div className="cp-body" style={{ "--tabs-width": `${tabsWidth}px` }}>
         {/* LEFT: subject tab list */}
         <div className="cp-subject-tabs">
           {mySubjects.map((subject, idx) => {
@@ -118,6 +192,13 @@ export default function ClassPicker({
             );
           })}
         </div>
+
+        <div
+          className="resize-handle"
+          role="separator"
+          aria-orientation="vertical"
+          onPointerDown={startResizeTabs}
+        />
 
         {/* RIGHT: class list for active subject */}
         <div className="cp-class-list">

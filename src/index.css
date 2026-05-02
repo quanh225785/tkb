@@ -131,6 +131,13 @@ a:hover {
   justify-content: center;
   color: #fff;
 }
+
+.logo-gif {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  object-fit: cover;
+}
 .logo-title {
   font-size: 15px;
   font-weight: 700;
@@ -541,6 +548,7 @@ a:hover {
   color: var(--blue);
   font-family: monospace;
 }
+
 .sp-tc {
   font-size: 10px;
   background: rgba(var(--blue-rgb), 0.14);
@@ -550,6 +558,7 @@ a:hover {
   font-weight: 600;
 }
 .sp-type {
+  background: var(--bg4);
   font-size: 10px;
   padding: 2px 7px;
   border-radius: 99px;
@@ -622,7 +631,7 @@ a:hover {
 /* ── SCHEDULE LAYOUT (Step 2): 2-column, full viewport ── */
 .schedule-layout {
   display: grid;
-  grid-template-columns: 380px 1fr;
+  grid-template-columns: var(--picker-width, 380px) 8px 1fr;
   gap: 0;
   height: calc(100vh - 60px); /* 60px = header height */
   padding: 0;
@@ -634,7 +643,6 @@ a:hover {
   display: flex;
   flex-direction: column;
   background: var(--bg2);
-  border-right: 1px solid var(--border);
   overflow: hidden;
   min-height: 0;
 }
@@ -644,7 +652,20 @@ a:hover {
   background: var(--bg);
   overflow: hidden;
   min-height: 0;
-  padding: 12px;
+  padding: 8px;
+}
+
+.resize-handle {
+  width: 8px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.resize-handle:hover {
+  background: var(--bg3);
 }
 
 /* ── CLASS PICKER ── */
@@ -709,7 +730,8 @@ a:hover {
 
 /* Body splits into subject-tabs | class-list */
 .cp-body {
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--tabs-width, 160px) 8px 1fr;
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -717,10 +739,8 @@ a:hover {
 
 /* Subject tab sidebar */
 .cp-subject-tabs {
-  width: 160px;
-  flex-shrink: 0;
+  min-width: 0;
   overflow-y: auto;
-  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -769,7 +789,7 @@ a:hover {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  max-width: 100%;
 }
 .cp-tab-chosen {
   display: flex;
@@ -993,14 +1013,22 @@ a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  gap: 6px;
+  padding: 10px 12px;
+  gap: 5px;
   text-align: center;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
+.tkb-empty-gif {
+  width: 84px;
+  height: auto;
+  border-radius: var(--r16);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  box-shadow: var(--shadow);
+}
 .tkb-empty h3 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 .tkb-empty p {
@@ -1049,6 +1077,24 @@ a:hover {
 }
 .leg-rm:hover {
   color: var(--red);
+}
+
+.leg-clear {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--red);
+  flex-shrink: 0;
+}
+
+.leg-clear:hover {
+  filter: brightness(0.98);
 }
 
 .timetable-scroll {
@@ -1123,7 +1169,7 @@ a:hover {
   font-size: 8px;
 }
 .td-class {
-  height: 40px;
+  height: 44px;
 }
 .td-class.filled {
   padding: 4px 5px;
@@ -1144,6 +1190,11 @@ a:hover {
   font-size: 7px;
   color: var(--text3);
   font-family: monospace;
+}
+.cell-time {
+  font-size: 8px;
+  color: var(--text2);
+  font-weight: 600;
 }
 .cell-room,
 .cell-lect {
@@ -1346,7 +1397,7 @@ a:hover {
   font-weight: 700;
   font-family: monospace;
   color: var(--text);
-  background: var(--bg3);
+  background: var(--bg2);
   padding: 1px 6px;
   border-radius: 4px;
 }
@@ -1437,13 +1488,21 @@ a:hover {
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  padding: 20px;
-  gap: 8px;
+  padding: 10px 12px;
+  gap: 5px;
   text-align: center;
   border-bottom: 1px solid var(--border);
 }
+.tkb-empty-gif {
+  width: 84px;
+  height: auto;
+  border-radius: var(--r16);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  box-shadow: var(--shadow);
+}
 .tkb-empty h3 {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
 }
 .tkb-empty p {
@@ -1564,7 +1623,7 @@ a:hover {
   font-size: 9px;
 }
 .td-class {
-  height: 52px;
+  height: 44px;
 }
 .td-class.empty {
 }
@@ -1587,6 +1646,11 @@ a:hover {
   font-size: 8px;
   color: var(--text3);
   font-family: monospace;
+}
+.cell-time {
+  font-size: 9px;
+  color: var(--text2);
+  font-weight: 600;
 }
 .cell-room,
 .cell-lect {

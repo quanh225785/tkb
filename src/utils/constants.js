@@ -8,31 +8,28 @@ export const DAYS = [
 ];
 
 export const TIME_SLOTS = [
-  { period: 1, time: "07:00 - 07:50", session: "sang" },
-  { period: 2, time: "07:55 - 08:45", session: "sang" },
-  { period: 3, time: "08:50 - 09:40", session: "sang" },
-  { period: 4, time: "09:45 - 10:35", session: "sang" },
-  { period: 5, time: "10:40 - 11:30", session: "sang" },
-  { period: 6, time: "11:35 - 12:25", session: "sang" },
-  { period: 7, time: "12:30 - 13:20", session: "chieu" },
-  { period: 8, time: "13:25 - 14:15", session: "chieu" },
-  { period: 9, time: "14:20 - 15:10", session: "chieu" },
-  { period: 10, time: "15:15 - 16:05", session: "chieu" },
-  { period: 11, time: "16:10 - 17:00", session: "chieu" },
-  { period: 12, time: "17:05 - 17:55", session: "chieu" },
-  { period: 13, time: "18:00 - 18:50", session: "toi" },
-  { period: 14, time: "18:55 - 19:45", session: "toi" },
-  { period: 15, time: "19:50 - 20:40", session: "toi" },
-  { period: 16, time: "20:45 - 21:35", session: "toi" },
+  // Sáng (kíp 1–6)
+  { period: 1, time: "06:45–07:30", session: "sang" },
+  { period: 2, time: "07:30–08:15", session: "sang" },
+  { period: 3, time: "08:25–09:10", session: "sang" },
+  { period: 4, time: "09:20–10:05", session: "sang" },
+  { period: 5, time: "10:15–11:00", session: "sang" },
+  { period: 6, time: "11:00–11:45", session: "sang" },
+
+  // Chiều (kíp 1–6) — dùng period 7–12 để khớp dữ liệu hiện tại
+  { period: 7, time: "12:30–13:15", session: "chieu" },
+  { period: 8, time: "13:15–14:00", session: "chieu" },
+  { period: 9, time: "14:10–14:55", session: "chieu" },
+  { period: 10, time: "15:05–15:50", session: "chieu" },
+  { period: 11, time: "16:00–16:45", session: "chieu" },
+  { period: 12, time: "16:45–17:30", session: "chieu" },
 ];
 
 export const SESSION_LABELS = {
   sang: "Buổi Sáng",
   chieu: "Buổi Chiều",
-  toi: "Buổi Tối",
   S: "sang",
   C: "chieu",
-  T: "toi",
 };
 
 export const CLASS_COLORS = [
