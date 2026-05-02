@@ -20,15 +20,15 @@ export default function Header({
           <div className="logo-icon">
             <img
               className="logo-gif"
-              src="https://media3.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3ajJ1cDJ6MjV5OW9sZHlkbGs1aG1ycjM5dDZqMzBpNWRmaGt6ajRmYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/dvdcBNbAiNVT9Z0iwP/giphy.webp"
+              src="https://media4.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3MWRpODNkenllOXg1amQ5NmY1cnY4ZTZpNTRzOGRvNGw1bXBmYXB2OSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/k6SImaefvartv71xUc/giphy.webp"
               alt="Logo"
               loading="lazy"
               decoding="async"
             />
           </div>
           <div>
-            <h1 className="logo-title">Xếp Lịch Học</h1>
-            <p className="logo-subtitle">HUST TKB Planner</p>
+            <h1 className="logo-title">Húthút</h1>
+            <p className="logo-subtitle">Xếp Lịch Học HUST</p>
           </div>
         </div>
 

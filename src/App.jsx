@@ -291,7 +291,7 @@ export default function App() {
           <div className="upload-page">
             <div className="upload-hero">
               <div className="hero-icon">📅</div>
-              <h2>HUST TKB Planner</h2>
+              <h2>Húthút</h2>
               <p>
                 Tải file Excel TKB từ EsHUST để bắt đầu lên kế hoạch lịch học
               </p>
