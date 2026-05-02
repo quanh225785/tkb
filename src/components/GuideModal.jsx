@@ -1,35 +1,44 @@
-import React from 'react';
-import { X, Upload, Search, MousePointer, Download, Save, FolderOpen, BookOpen } from 'lucide-react';
+import React from "react";
+import {
+  X,
+  Upload,
+  Search,
+  MousePointer,
+  Download,
+  Save,
+  FolderOpen,
+  BookOpen,
+} from "lucide-react";
 
 const steps = [
   {
     icon: <Upload size={24} />,
-    color: '#3B82F6',
-    title: 'Tải file Excel TKB',
-    desc: 'Tải file Excel từ EsHUST (đăng nhập → Đăng ký học → Xuất Excel). Kéo thả hoặc click vào ô upload để chọn file.',
+    color: "#93C5FD",
+    title: "Tải file Excel TKB",
+    desc: "Tải file Excel từ EsHUST (đăng nhập → Đăng ký học → Xuất Excel). Kéo thả hoặc click vào ô upload để chọn file.",
   },
   {
     icon: <Search size={24} />,
-    color: '#10B981',
-    title: 'Tìm kiếm môn học',
+    color: "#6EE7B7",
+    title: "Tìm kiếm môn học",
     desc: 'Nhập tên hoặc mã học phần vào ô tìm kiếm. Chọn chương trình học (CT Chuẩn, Tiên tiến...) rồi nhấn "Tìm lớp".',
   },
   {
     icon: <MousePointer size={24} />,
-    color: '#8B5CF6',
-    title: 'Chọn kíp học',
+    color: "#C4B5FD",
+    title: "Chọn kíp học",
     desc: 'Xem danh sách lớp hiện ra, click nút "+" để thêm vào TKB. Hệ thống sẽ báo nếu có trùng lịch với môn khác.',
   },
   {
     icon: <BookOpen size={24} />,
-    color: '#F59E0B',
-    title: 'Xem thời khóa biểu',
+    color: "#FDE68A",
+    title: "Xem thời khóa biểu",
     desc: 'Nhấn "Xem TKB" để xem lịch dạng bảng theo tuần. Các môn được tô màu khác nhau để dễ phân biệt.',
   },
   {
     icon: <Download size={24} />,
-    color: '#EF4444',
-    title: 'Xuất & lưu lịch',
+    color: "#FDA4AF",
+    title: "Xuất & lưu lịch",
     desc: '"Xuất file" để tải về Excel. "Lưu" để lưu vào trình duyệt (không mất khi đóng tab). "Mở" để tải lại lịch đã lưu.',
   },
 ];
@@ -37,31 +46,47 @@ const steps = [
 export default function GuideModal({ onClose }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-box guide-modal" onClick={e => e.stopPropagation()}>
+      <div
+        className="modal-box guide-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <div className="modal-title">
             <BookOpen size={22} />
             <h2>Hướng dẫn sử dụng</h2>
           </div>
-          <button id="btn-close-guide" className="modal-close" onClick={onClose}>
+          <button
+            id="btn-close-guide"
+            className="modal-close"
+            onClick={onClose}
+          >
             <X size={20} />
           </button>
         </div>
 
         <div className="modal-content">
           <p className="guide-intro">
-            App <strong>Xếp Lịch Học HUST</strong> giúp bạn lên kế hoạch thời khóa biểu trước khi đăng ký môn học chính thức.
+            App <strong>Xếp Lịch Học HUST</strong> giúp bạn lên kế hoạch thời
+            khóa biểu trước khi đăng ký môn học chính thức.
           </p>
 
           <div className="guide-steps">
             {steps.map((step, i) => (
               <div key={i} className="guide-step">
-                <div className="step-icon" style={{ background: `${step.color}20`, color: step.color }}>
+                <div
+                  className="step-icon"
+                  style={{ background: `${step.color}20`, color: step.color }}
+                >
                   {step.icon}
                 </div>
                 <div className="step-content">
                   <h4 className="step-title">
-                    <span className="step-num" style={{ background: step.color }}>{i + 1}</span>
+                    <span
+                      className="step-num"
+                      style={{ background: step.color }}
+                    >
+                      {i + 1}
+                    </span>
                     {step.title}
                   </h4>
                   <p className="step-desc">{step.desc}</p>
