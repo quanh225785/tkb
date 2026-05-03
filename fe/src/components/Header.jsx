@@ -9,6 +9,7 @@ export default function Header({
   onExport,
   onSave,
   onShowGuide,
+  onPayment,
   hasFile,
   fileName,
 }) {
@@ -74,6 +75,10 @@ export default function Header({
               </button>
             </>
           )}
+          <button className="premium-btn" onClick={onPayment}>
+            <span className="premium-icon">☕</span>
+            <span>Donate</span>
+          </button>
           <button className="action-btn guide-btn" onClick={onShowGuide}>
             <BookOpen size={14} />
             <span>Hướng dẫn</span>

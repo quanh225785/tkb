@@ -6,6 +6,7 @@ import ClassPicker from "./components/ClassPicker";
 import TimetableGrid from "./components/TimetableGrid";
 import GuideModal from "./components/GuideModal";
 import Notification from "./components/Notification";
+import PaymentPage from "./components/PaymentPage";
 import { parseExcelFile } from "./utils/excelParser";
 import {
   saveToStorage,
@@ -31,6 +32,7 @@ export default function App() {
   const [selectedClasses, setSelectedClasses] = useState({}); // {maHP: classObj}
   const [showGuide, setShowGuide] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [showPayment, setShowPayment] = useState(false);
 
   const [pickerWidth, setPickerWidth] = useState(() => {
     try {
@@ -281,6 +283,7 @@ export default function App() {
         onSave={handleSave}
         onImport={() => importJsonRef.current?.click()}
         onShowGuide={() => setShowGuide(true)}
+        onPayment={() => setShowPayment(true)}
         hasSavedData={hasSavedData}
         hasFile={allClasses.length > 0}
         fileName={fileName}
@@ -421,6 +424,15 @@ export default function App() {
         onChange={handleImportJSON}
       />
       {showGuide && <GuideModal onClose={() => setShowGuide(false)} />}
+      {showPayment && (
+        <PaymentPage
+          onClose={() => setShowPayment(false)}
+          onSuccess={() => {
+            setShowPayment(false);
+          }}
+          addNotif={addNotif}
+        />
+      )}
       <Notification notifications={notifications} onDismiss={dismissNotif} />
     </div>
   );

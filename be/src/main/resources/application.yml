@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  # ── Datasource (đọc từ env vars, fallback cho dev local) ──
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/tkb?useSSL=false}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# ── PayOS (đọc từ env vars) ──
+payos:
+  client-id: ${PAYOS_CLIENT_ID:}
+  api-key: ${PAYOS_API_KEY:}
+  checksum-key: ${PAYOS_CHECKSUM_KEY:}
+
+# ── App ──
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+
+# ── Logging ──
+logging:
+  level:
+    com.hust.tkb: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
