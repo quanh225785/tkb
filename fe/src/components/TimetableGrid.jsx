@@ -62,6 +62,7 @@ export default function TimetableGrid({
   colorMap,
   onRemoveClass,
   onRemoveAll,
+  compact = false,
 }) {
   const timetableMap = useMemo(
     () => buildTimetableMap(selectedClasses),
@@ -70,7 +71,7 @@ export default function TimetableGrid({
 
   if (selectedClasses.length === 0) {
     return (
-      <div className="tkb-wrap">
+      <div className={`tkb-wrap ${compact ? "tkb-compact" : ""}`}>
         <div className="tkb-empty">
           <img
             className="tkb-empty-gif"
@@ -135,36 +136,38 @@ export default function TimetableGrid({
   }
 
   return (
-    <div className="tkb-wrap">
+    <div className={`tkb-wrap ${compact ? "tkb-compact" : ""}`}>
       {/* Legend */}
-      <div className="tkb-legend">
-        {onRemoveAll && (
-          <button className="leg-clear" type="button" onClick={onRemoveAll}>
-            Xóa tất cả
-          </button>
-        )}
-        {selectedClasses.map((cls, idx) => {
-          const colorObj = colorMap?.[cls.id];
-          const color = colorObj?.bg || COLORS[idx % 12];
-          return (
-            <div key={cls.id} className="leg-item">
-              <span className="leg-dot" style={{ background: color }} />
-              <span className="leg-text">
-                {cls.tenHP} · {cls.maLop}
-              </span>
-              {onRemoveClass && (
-                <button
-                  className="leg-rm"
-                  type="button"
-                  onClick={() => onRemoveClass(cls.id)}
-                >
-                  <X size={11} />
-                </button>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      {!compact && (
+        <div className="tkb-legend">
+          {onRemoveAll && (
+            <button className="leg-clear" type="button" onClick={onRemoveAll}>
+              Xóa tất cả
+            </button>
+          )}
+          {selectedClasses.map((cls, idx) => {
+            const colorObj = colorMap?.[cls.id];
+            const color = colorObj?.bg || COLORS[idx % 12];
+            return (
+              <div key={cls.id} className="leg-item">
+                <span className="leg-dot" style={{ background: color }} />
+                <span className="leg-text">
+                  {cls.tenHP} · {cls.maLop}
+                </span>
+                {onRemoveClass && (
+                  <button
+                    className="leg-rm"
+                    type="button"
+                    onClick={() => onRemoveClass(cls.id)}
+                  >
+                    <X size={11} />
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Grid */}
       <div className="timetable-scroll">
