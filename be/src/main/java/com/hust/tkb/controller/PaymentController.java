@@ -107,9 +107,8 @@ public class PaymentController {
 
             // Xử lý kết quả: code "00" = thanh toán thành công
             String code = webhookBody.getCode();
-            boolean success = webhookBody.isSuccess();
 
-            if ("00".equals(code) && success) {
+            if ("00".equals(code)) {
                 paymentService.handleWebhook(String.valueOf(orderCode), "PAID", reference);
                 log.info("Payment PAID: orderCode={}", orderCode);
             } else {
