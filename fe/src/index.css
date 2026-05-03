@@ -2909,3 +2909,25 @@ a:hover {
 .as-result-count { font-size: 16px; text-align: center; }
 .as-result-count .highlight { color: var(--green); font-weight: bold; }
 .as-empty { text-align: center; padding: 30px; }
+
+/* New Auto Scheduler Styles */
+.as-modal-container { background: var(--bg1); color: var(--text); width: 95%; max-width: 900px; max-height: 90vh; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+.as-modal-header { display: flex; align-items: center; padding: 16px 20px; background: var(--bg2); border-bottom: 1px solid var(--border); gap: 15px; }
+.as-header-icon { font-size: 28px; }
+.as-title { margin: 0; font-size: 18px; color: var(--text); }
+.as-subtitle { margin: 0; font-size: 13px; color: var(--text2); }
+.as-body { padding: 20px; overflow-y: auto; flex: 1; }
+.as-setup h3 { margin-bottom: 12px; color: var(--text); }
+.as-day-btn { background: var(--bg3); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+.as-day-btn:hover { background: var(--bg4); }
+.as-day-btn.active { background: var(--amber); color: #000; border-color: var(--amber); }
+.as-preview-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 15px; background: var(--bg1); }
+.as-preview-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+.as-nav-btn { background: var(--bg3); color: var(--text); border: 1px solid var(--border); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+.as-nav-btn:hover:not(:disabled) { background: var(--bg4); }
+.as-preview-meta strong { font-size: 15px; }
+.as-preview-stats { display: flex; justify-content: center; gap: 30px; padding: 12px; background: var(--bg1); border-bottom: 1px solid var(--border); color: var(--text2); }
+.as-preview-stats strong { color: var(--text); }
+.as-preview-grid-wrapper { max-height: 400px; overflow: auto; position: relative; }
+.as-preview-grid-wrapper .tkb-wrap { height: auto; }
+.as-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
