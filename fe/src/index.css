@@ -2883,3 +2883,29 @@ a:hover {
 .history-item-right { display: flex; align-items: center; gap: 8px; }
 .refresh-status-btn { background: transparent; border: 1px solid #555; color: #aaa; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
 .refresh-status-btn:hover { background: #333; color: #fff; border-color: #888; }
+
+/* Auto Scheduler */
+.auto-scheduler-modal { max-width: 600px; width: 100%; }
+.as-body { padding: 10px; }
+.as-section { margin-bottom: 20px; }
+.as-section h3 { font-size: 14px; margin-bottom: 8px; color: #fff; }
+.as-hint { font-size: 12px; color: #aaa; margin: 0; }
+.as-days-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.as-day-btn { background: #333; color: #ccc; border: 1px solid #444; border-radius: 6px; padding: 8px 16px; cursor: pointer; transition: 0.2s; font-weight: 600; }
+.as-day-btn:hover { background: #444; }
+.as-day-btn.active { background: var(--amber); color: #000; border-color: var(--amber); }
+.as-preview-card { background: #222; border-radius: 8px; border: 1px solid #333; overflow: hidden; margin-top: 15px; }
+.as-preview-header { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #1a1a1a; border-bottom: 1px solid #333; }
+.as-nav-btn { background: #333; color: #fff; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+.as-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.as-preview-meta { display: flex; flex-direction: column; align-items: center; }
+.as-score-badge { font-size: 11px; background: #333; padding: 2px 6px; border-radius: 10px; margin-top: 4px; color: #aaa; }
+.as-preview-stats { display: flex; justify-content: center; gap: 20px; padding: 10px; font-size: 12px; color: #ccc; background: #222; }
+.as-preview-list { padding: 10px; max-height: 250px; overflow-y: auto; }
+.as-preview-item { display: flex; flex-direction: column; padding: 8px; border-bottom: 1px solid #333; }
+.as-preview-item:last-child { border-bottom: none; }
+.as-preview-item .code { font-weight: 600; color: #fff; font-size: 13px; }
+.as-preview-item .name { color: #aaa; font-size: 12px; }
+.as-result-count { font-size: 16px; text-align: center; }
+.as-result-count .highlight { color: var(--green); font-weight: bold; }
+.as-empty { text-align: center; padding: 30px; }

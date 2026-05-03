@@ -7,6 +7,7 @@ import TimetableGrid from "./components/TimetableGrid";
 import GuideModal from "./components/GuideModal";
 import Notification from "./components/Notification";
 import PaymentPage from "./components/PaymentPage";
+import AutoSchedulerModal from "./components/AutoSchedulerModal";
 import { parseExcelFile } from "./utils/excelParser";
 import {
   saveToStorage,
@@ -33,6 +34,7 @@ export default function App() {
   const [showGuide, setShowGuide] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [showPayment, setShowPayment] = useState(false);
+  const [showAutoScheduler, setShowAutoScheduler] = useState(false);
 
   const [pickerWidth, setPickerWidth] = useState(() => {
     try {
@@ -393,6 +395,7 @@ export default function App() {
                 colorMap={colorMap}
                 onSelectClass={handleSelectClass}
                 onBackToSubjects={() => setStep("subjects")}
+                onOpenAutoScheduler={() => setShowAutoScheduler(true)}
               />
             </div>
             <div
@@ -431,6 +434,21 @@ export default function App() {
             setShowPayment(false);
           }}
           addNotif={addNotif}
+        />
+      )}
+      {showAutoScheduler && (
+        <AutoSchedulerModal
+          mySubjects={mySubjects}
+          currentSelected={selectedClasses}
+          onApply={(schedule) => {
+            const next = {};
+            schedule.forEach(cls => {
+              next[cls.maHP] = cls;
+            });
+            setSelectedClasses(next);
+            addNotif(`Đã áp dụng lịch tự động!`, "success", 4000);
+          }}
+          onClose={() => setShowAutoScheduler(false)}
         />
       )}
       <Notification notifications={notifications} onDismiss={dismissNotif} />

@@ -60,6 +60,7 @@ export default function ClassPicker({
   colorMap,
   onSelectClass,
   onBackToSubjects,
+  onOpenAutoScheduler,
 }) {
   const [activeIdx, setActiveIdx] = useState(0);
 
@@ -127,9 +128,16 @@ export default function ClassPicker({
         <button className="btn-back" onClick={onBackToSubjects}>
           <ArrowLeft size={14} /> Môn học
         </button>
-        <div className="cp-title">
+        <div className="cp-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span className="step-badge">Bước 2</span>
           Xếp lịch học
+          <button 
+            className="payment-btn primary" 
+            style={{ padding: '4px 10px', fontSize: '12px', minWidth: 'auto', marginLeft: 'auto' }}
+            onClick={onOpenAutoScheduler}
+          >
+            🪄 Tự động xếp
+          </button>
         </div>
         <div className="cp-progress">
           <span
