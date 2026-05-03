@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { createPayment, getPaymentStatus } from '../services/api';
 
+const HISTORY_KEY = 'tkb:donate_history';
+
 /**
  * Component Donate - thanh toán tùy chọn số tiền qua PayOS
  * Người dùng có thể nhập số tiền bất kỳ (tối thiểu 2.000 VNĐ)
@@ -14,6 +16,14 @@ export default function PaymentPage({ onClose, onSuccess, addNotif }) {
   const [paymentData, setPaymentData] = useState(null);
   const [step, setStep] = useState('form'); // 'form' | 'checkout' | 'result'
   const [checking, setChecking] = useState(false);
+  const [activeTab, setActiveTab] = useState('donate'); // 'donate' | 'history'
+  const [history, setHistory] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+    } catch {
+      return [];
+    }
+  });
 
   const [form, setForm] = useState({
     buyerName: '',
@@ -57,6 +67,17 @@ export default function PaymentPage({ onClose, onSuccess, addNotif }) {
 
       setPaymentData(result);
       setStep('checkout');
+
+      // Lưu lịch sử local
+      const newRecord = {
+        orderCode: result.orderCode,
+        amount: currentAmount,
+        date: new Date().toISOString(),
+        status: 'PENDING'
+      };
+      const updatedHistory = [newRecord, ...history];
+      setHistory(updatedHistory);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(updatedHistory));
 
       // Mở trang thanh toán PayOS trong tab mới
       if (result.checkoutUrl) {
@@ -108,10 +129,12 @@ export default function PaymentPage({ onClose, onSuccess, addNotif }) {
           clearInterval(pollInterval);
           setStep('result');
           addNotif?.('🎉 Cảm ơn bạn đã donate!', 'success', 5000);
+          updateHistoryStatus(paymentData.orderCode, 'PAID');
           onSuccess?.();
         } else if (result.status === 'CANCELLED') {
           clearInterval(pollInterval);
           setStep('result');
+          updateHistoryStatus(paymentData.orderCode, 'CANCELLED');
           addNotif?.('Đơn hàng đã bị huỷ', 'warning');
         }
       } catch {
@@ -122,6 +145,25 @@ export default function PaymentPage({ onClose, onSuccess, addNotif }) {
     return () => clearInterval(pollInterval);
   }, [step, paymentData?.orderCode, addNotif, onSuccess]);
 
+  const updateHistoryStatus = (orderCode, status) => {
+    setHistory(prev => {
+      const next = prev.map(item => item.orderCode === orderCode ? { ...item, status } : item);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const refreshHistoryStatus = async (orderCode) => {
+    try {
+      const result = await getPaymentStatus(orderCode);
+      if (result && result.status) {
+        updateHistoryStatus(orderCode, result.status);
+      }
+    } catch (err) {
+      // ignore
+    }
+  };
+
   return (
     <div className="payment-overlay" onClick={onClose}>
       <div className="payment-modal" onClick={e => e.stopPropagation()}>
@@ -130,7 +172,20 @@ export default function PaymentPage({ onClose, onSuccess, addNotif }) {
           <div className="payment-header-icon">☕</div>
           <div>
             <h2 className="payment-title">Ủng hộ dự án</h2>
-            <p className="payment-subtitle">Mời mình ly cà phê qua PayOS 💛</p>
+            <div className="payment-tabs">
+              <button 
+                className={`tab-btn ${activeTab === 'donate' ? 'active' : ''}`}
+                onClick={() => setActiveTab('donate')}
+              >
+                Donate
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+                onClick={() => setActiveTab('history')}
+              >
+                Lịch sử
+              </button>
+            </div>
           </div>
           <button className="payment-close" onClick={onClose}>✕</button>
         </div>
@@ -153,6 +208,35 @@ export default function PaymentPage({ onClose, onSuccess, addNotif }) {
           </div>
         </div>
 
+        {activeTab === 'history' ? (
+          <div className="payment-history-list">
+            {history.length === 0 ? (
+              <p className="history-empty">Bạn chưa có lịch sử donate nào.</p>
+            ) : (
+              history.map((item, idx) => (
+                <div key={idx} className="history-item">
+                  <div className="history-item-left">
+                    <div className="history-amount">{Number(item.amount).toLocaleString('vi-VN')} VNĐ</div>
+                    <div className="history-date">{new Date(item.date).toLocaleString('vi-VN')}</div>
+                  </div>
+                  <div className="history-item-right">
+                    <span className={`checkout-status status-${item.status?.toLowerCase()}`}>
+                      {item.status === 'PENDING' ? '⏳ Chờ thanh toán' :
+                       item.status === 'PAID' ? '✅ Đã thanh toán' :
+                       item.status === 'CANCELLED' ? '❌ Đã huỷ' : item.status}
+                    </span>
+                    {item.status === 'PENDING' && (
+                      <button className="refresh-status-btn" onClick={() => refreshHistoryStatus(item.orderCode)}>
+                        ↻
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        ) : (
+          <>
         {/* Form Step */}
         {step === 'form' && (
           <div className="payment-form">
@@ -313,6 +397,8 @@ export default function PaymentPage({ onClose, onSuccess, addNotif }) {
             status={paymentData?.status}
             onClose={onClose}
           />
+        )}
+        </>
         )}
       </div>
     </div>

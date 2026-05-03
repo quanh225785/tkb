@@ -69,8 +69,8 @@ public class PaymentService {
                 .orderCode(orderCode)
                 .amount((long) amount)
                 .description(description)
-                .returnUrl(frontendUrl + "/payment/success")
-                .cancelUrl(frontendUrl + "/payment/cancel")
+                .returnUrl(frontendUrl + "/?payment=success")
+                .cancelUrl(frontendUrl + "/?payment=cancel")
                 .item(item)
                 .build();
 
